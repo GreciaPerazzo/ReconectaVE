@@ -223,6 +223,10 @@
                 <label for="location">Dónde se le vio por última vez</label>
                 <input type="text" id="location" placeholder="Ej. Altamira, Caracas" />
             </div>
+            <div class="field">
+                <label for="notes">Notas adicionales (opcional)</label>
+                <input type="text" id="notes" placeholder="Ej. ropa, señas particulares, condición médica" />
+            </div>
 
             <div class="field">
                 <label for="contact">Tu contacto <span class="req">*</span></label>
@@ -399,6 +403,7 @@
             const cedula = document.getElementById('cedula').value.trim()
             const age = parseInt(document.getElementById('age').value)
             const location = document.getElementById('location').value.trim()
+            const notes = document.getElementById('notes').value.trim()
             const contact = document.getElementById('contact').value.trim()
             const msg = document.getElementById('form-msg')
 
@@ -414,7 +419,7 @@
             }
 
             const { error } = await supabase.from('reports').insert({
-                name, cedula, age, last_seen_location: location, contact, photo_url
+                name, cedula, age, last_seen_location: location, notes, contact, photo_url
             })
 
             if (error) { msg.textContent = 'Error: ' + error.message }
@@ -424,6 +429,7 @@
                 document.getElementById('cedula').value = ''
                 document.getElementById('age').value = ''
                 document.getElementById('location').value = ''
+                document.getElementById('notes').value = ''
                 document.getElementById('contact').value = ''
                 photoInput.value = ''
                 document.getElementById('photo-name').textContent = ''
@@ -510,6 +516,7 @@
                     ${r.cedula ? `<div class="meta">C.I. ${escapeHtml(r.cedula)}</div>` : ''}
                     ${r.last_seen_location ? `<div class="meta">📍 ${escapeHtml(r.last_seen_location)}</div>` : ''}
                     ${r.contact ? `<div class="meta">📞 ${escapeHtml(r.contact)}</div>` : ''}
+                    ${r.notes ? `<div class="meta">📝 ${escapeHtml(r.notes)}</div>` : ''}
                     ${foundBy}
                     ${!found ? `<button class="found-btn" data-id="${r.id}">Marcar como encontrado</button>` : ''}
                 </div>`

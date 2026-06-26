@@ -23,7 +23,7 @@
             color:var(--ink);
             line-height:1.5;
         }
-        .container{max-width:760px;margin:0 auto;padding:32px 20px}
+        .container{max-width:900px;margin:0 auto;padding:32px 20px}
         h1{font-size:2rem;margin:0 0 4px}
         h2{font-size:1.15rem;font-weight:500;color:var(--muted);margin:0 0 24px}
 
@@ -34,20 +34,17 @@
         }
         #open-form-btn:hover{background:var(--accent-dark)}
 
-        #report-form{
-            display:none;
-            position:fixed;inset:0;
-            background:rgba(15,23,32,.55);
-            z-index:50;
-            padding:20px;
-            overflow-y:auto;
+        /*  Modals */
+        #report-form,#found-modal{
+            display:none;position:fixed;inset:0;
+            background:rgba(15,23,32,.55);z-index:50;
+            padding:20px;overflow-y:auto;
         }
+        #found-modal{z-index:60}
         .modal-card{
-            background:var(--surface);
-            max-width:440px;margin:6vh auto;
+            background:var(--surface);max-width:440px;margin:6vh auto;
             border-radius:16px;padding:28px;
-            box-shadow:0 20px 50px rgba(0,0,0,.25);
-            position:relative;
+            box-shadow:0 20px 50px rgba(0,0,0,.25);position:relative;
         }
         .modal-card h3{margin:0 0 4px;font-size:1.3rem}
         .modal-card .sub{color:var(--muted);font-size:.9rem;margin:0 0 22px}
@@ -60,7 +57,7 @@
         .field{margin-bottom:16px}
         .field label{display:block;font-size:.85rem;font-weight:600;margin-bottom:6px}
         .field label .req{color:var(--required)}
-        .field input[type=text]{
+        .field input[type=text],.field input[type=number]{
             width:100%;padding:12px 14px;font-size:1rem;
             border:1px solid var(--line);border-radius:10px;
             background:#fff;color:var(--ink);
@@ -74,19 +71,40 @@
         }
         #dropzone:hover,#dropzone.drag{border-color:var(--accent);background:#f0f7f9;color:var(--accent)}
         #dropzone .icon{display:block;margin-bottom:10px;line-height:0}
-        #photo-preview{
-            display:none;max-width:100%;max-height:200px;
-            border-radius:10px;margin-top:12px;
-        }
+        #photo-preview{display:none;max-width:100%;max-height:200px;border-radius:10px;margin-top:12px}
         #photo-name{display:block;margin-top:8px;font-size:.85rem;color:var(--muted)}
 
-        #submit-btn{
+        .primary-btn{
             width:100%;background:var(--accent);color:#fff;border:none;
             padding:14px;border-radius:10px;font-size:1rem;font-weight:600;
             cursor:pointer;margin-top:8px;
         }
-        #submit-btn:hover{background:var(--accent-dark)}
+        .primary-btn:hover{background:var(--accent-dark)}
+        .ghost-btn{width:100%;background:none;border:none;color:var(--muted);padding:10px;font-size:.9rem;cursor:pointer;margin-top:6px}
         #form-msg{text-align:center;margin:14px 0 0;font-weight:500}
+        #found-msg{text-align:center;margin:12px 0 0;font-weight:500;color:var(--required)}
+
+        /* List */
+        #search{
+            width:100%;padding:12px 14px;font-size:1rem;
+            border:1px solid var(--line);border-radius:10px;margin:28px 0 0;
+        }
+        #search:focus{outline:2px solid var(--accent);border-color:var(--accent)}
+        .section-title{font-size:1.5rem;margin:36px 0 0}
+        .sub-title{font-size:1rem;color:var(--muted);margin:20px 0 10px;font-weight:600}
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px}
+        .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+        .card .photo{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#e9edf0}
+        .card .photo-placeholder{width:100%;aspect-ratio:1/1;display:grid;place-items:center;background:#e9edf0;color:#9aa7b1;font-size:2.4rem;font-weight:700}
+        .card .body{padding:12px;display:flex;flex-direction:column;gap:2px}
+        .card .name{font-weight:700;font-size:1rem}
+        .card .meta{font-size:.82rem;color:var(--muted)}
+        .badge{display:inline-block;align-self:flex-start;font-size:.72rem;font-weight:700;padding:3px 8px;border-radius:999px;margin:4px 0}
+        .badge.missing{background:#fdeceb;color:#c0392b}
+        .badge.safe{background:#e8f5ee;color:#2c7a57}
+        .found-btn{margin-top:8px;background:#fff;border:1.5px solid var(--accent);color:var(--accent);padding:8px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer}
+        .found-btn:hover{background:var(--accent);color:#fff}
+        .empty{color:var(--muted);font-size:.9rem}
     </style>
 </head>
 <body>
@@ -96,6 +114,7 @@
 
         <button id="open-form-btn">Reportar a persona desaparecida</button>
 
+        <!-- Report -->
         <div id="report-form">
             <div class="modal-card">
                 <button id="close-form-btn" aria-label="Cerrar">&times;</button>
@@ -108,7 +127,7 @@
                 </div>
 
                 <div class="field">
-                    <label for="cedula">Cédula (para facilitar la búsqueda)</label>
+                    <label for="cedula">Cédula (opcional)</label>
                     <input type="text" id="cedula" placeholder="Ej. V-12.345.678" />
                 </div>
 
@@ -143,15 +162,50 @@
                     <input id="photo" type="file" accept="image/*" style="display:none;" />
                 </div>
 
-                <button id="submit-btn">Reportar</button>
+                <button id="submit-btn" class="primary-btn">Reportar</button>
                 <p id="form-msg"></p>
             </div>
         </div>
+
+        <!-- Mark found -->
+        <div id="found-modal">
+            <div class="modal-card">
+                <h3>Marcar como encontrado</h3>
+                <p class="sub">Esto avisa que la persona fue encontrada y la mueve a "Encontrados". Tu nombre quedará registrado públicamente.</p>
+                <div class="field">
+                    <label for="finder-name">Tu nombre <span class="req">*</span></label>
+                    <input type="text" id="finder-name" placeholder="¿Quién encontró?" />
+                </div>
+                <div class="field">
+                <label for="found-location">¿Dónde fue encontrada? <span class="req">*</span></label>
+                    <input type="text" id="found-location" placeholder="Ej. Hospital de Caracas" />
+                </div>
+                <button id="found-confirm" class="primary-btn">Confirmar</button>
+                <button id="found-cancel" class="ghost-btn">Cancelar</button>
+                <p id="found-msg"></p>
+            </div>
+        </div>
+
+        <!-- The list -->
+        <input id="search" type="text" placeholder="Buscar por nombre o cédula..." />
+
+        <h2 class="section-title">Buscando</h2>
+        <h3 class="sub-title">Niños</h3>
+        <div class="grid" id="buscando-ninos"></div>
+        <h3 class="sub-title">Adultos</h3>
+        <div class="grid" id="buscando-adultos"></div>
+
+        <h2 class="section-title">Encontrados</h2>
+        <h3 class="sub-title">Niños</h3>
+        <div class="grid" id="encontrados-ninos"></div>
+        <h3 class="sub-title">Adultos</h3>
+        <div class="grid" id="encontrados-adultos"></div>
     </div>
 
     <script type="module">
         import { supabase } from './supabase.js'
 
+        // Report form
         document.getElementById('open-form-btn').addEventListener('click', () => {
             document.getElementById('report-form').style.display = 'block'
         })
@@ -161,11 +215,8 @@
 
         const dropzone = document.getElementById('dropzone')
         const photoInput = document.getElementById('photo')
-
         dropzone.addEventListener('click', () => photoInput.click())
-        dropzone.addEventListener('dragover', (e) => {
-            e.preventDefault(); dropzone.classList.add('drag')
-        })
+        dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('drag') })
         dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag'))
         dropzone.addEventListener('drop', (e) => {
             e.preventDefault(); dropzone.classList.remove('drag')
@@ -174,17 +225,12 @@
                 photoInput.dispatchEvent(new Event('change'))
             }
         })
-
         photoInput.addEventListener('change', (e) => {
             const f = e.target.files[0]
             const preview = document.getElementById('photo-preview')
             document.getElementById('photo-name').textContent = f ? f.name : ''
-            if (f) {
-                preview.src = URL.createObjectURL(f)
-                preview.style.display = 'block'
-            } else {
-                preview.style.display = 'none'
-            }
+            if (f) { preview.src = URL.createObjectURL(f); preview.style.display = 'block' }
+            else { preview.style.display = 'none' }
         })
 
         document.getElementById('submit-btn').addEventListener('click', async () => {
@@ -196,7 +242,7 @@
             const msg = document.getElementById('form-msg')
 
             if (!name || !contact || !age) { msg.textContent = 'Nombre, contacto y edad son obligatorios.'; return }
-            
+
             let photo_url = null
             const file = document.getElementById('photo').files[0]
             if (file) {
@@ -221,8 +267,126 @@
                 photoInput.value = ''
                 document.getElementById('photo-name').textContent = ''
                 document.getElementById('photo-preview').style.display = 'none'
+                fetchAndRender()
             }
         })
-    </script>
+
+        //List 
+        let allReports = []
+        let changedByMap = {}
+
+        async function fetchAndRender() {
+            const { data: reports } = await supabase.from('reports').select('*').order('created_at', { ascending: false })
+            allReports = reports || []
+
+            const { data: changes } = await supabase.from('status_changes').select('report_id, changed_by, note, created_at').order('created_at', { ascending: false })
+            changedByMap = {}
+            const noteMap = {}
+            if (changes) for (const c of changes) {
+                if (!changedByMap[c.report_id] && c.changed_by) {
+                    changedByMap[c.report_id] = c.changed_by
+                    noteMap[c.report_id] = c.note
+                }
+            }
+            window._noteMap = noteMap
+            render()
+        }
+
+        function render() {
+            const q = document.getElementById('search').value.trim().toLowerCase()
+            const filtered = allReports.filter(r => {
+                if (!q) return true
+                return (r.name && r.name.toLowerCase().includes(q)) || (r.cedula && r.cedula.toLowerCase().includes(q))
+            })
+            const isKid = r => r.age != null && r.age < 18
+            fill('buscando-ninos',     filtered.filter(r => r.status === 'missing' && isKid(r)))
+            fill('buscando-adultos',   filtered.filter(r => r.status === 'missing' && !isKid(r)))
+            fill('encontrados-ninos',  filtered.filter(r => r.status === 'safe' && isKid(r)))
+            fill('encontrados-adultos',filtered.filter(r => r.status === 'safe' && !isKid(r)))
+        }
+
+        function fill(id, list) {
+            const el = document.getElementById(id)
+            if (!list.length) { el.innerHTML = '<p class="empty">No hay personas en esta sección.</p>'; return }
+            el.innerHTML = ''
+            for (const r of list) el.appendChild(createCard(r))
+        }
+
+        function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) }
+
+        function createCard(r) {
+            const card = document.createElement('div')
+            card.className = 'card'
+            const found = r.status === 'safe'
+            const photo = r.photo_url
+                ? `<img class="photo" src="${r.photo_url}" alt="">`
+                : `<div class="photo-placeholder">${escapeHtml((r.name||'?').charAt(0).toUpperCase())}</div>`
+            const badge = found ? '<span class="badge safe">Encontrado</span>' : '<span class="badge missing">Buscando</span>'
+            const note = window._noteMap && window._noteMap[r.id]
+            const foundBy = (found && changedByMap[r.id])
+                ? `<div class="meta">Encontrado por ${escapeHtml(changedByMap[r.id])}${note ? ' ·📍' + escapeHtml(note) : ''}</div>`
+                : ''
+
+            card.innerHTML = `
+                ${photo}
+                <div class="body">
+                    <div class="name">${escapeHtml(r.name)}</div>
+                    ${badge}
+                    ${r.age != null ? `<div class="meta">${r.age} años</div>` : ''}
+                    ${r.cedula ? `<div class="meta">C.I. ${escapeHtml(r.cedula)}</div>` : ''}
+                    ${r.last_seen_location ? `<div class="meta"> ${escapeHtml(r.last_seen_location)}</div>` : ''}
+                    ${r.contact ? `<div class="meta">📞 ${escapeHtml(r.contact)}</div>` : ''}
+                    ${foundBy}
+                    ${!found ? `<button class="found-btn" data-id="${r.id}">Marcar como encontrado</button>` : ''}
+                </div>`
+            const btn = card.querySelector('.found-btn')
+            if (btn) btn.addEventListener('click', () => openFoundModal(r.id))
+            return card
+        }
+
+        document.getElementById('search').addEventListener('input', render)
+
+        // Mark found 
+        let currentFoundId = null
+        function openFoundModal(id) {
+            currentFoundId = id
+            document.getElementById('finder-name').value = ''
+            document.getElementById('found-location').value = ''
+            document.getElementById('found-msg').textContent = ''
+            document.getElementById('found-modal').style.display = 'block'
+        }
+        document.getElementById('found-cancel').addEventListener('click', () => {
+            document.getElementById('found-modal').style.display = 'none'
+        })
+        document.getElementById('found-confirm').addEventListener('click', async () => {
+            const finder = document.getElementById('finder-name').value.trim()
+            const foundLocation = document.getElementById('found-location').value.trim()
+            const msg = document.getElementById('found-msg')
+
+            if (!finder || !foundLocation) { msg.textContent = 'Por favor escribe tu nombre y dónde la encontraste.'; return }
+
+            const { error: upErr } = await supabase.from('reports').update({ status: 'safe' }).eq('id', currentFoundId)
+            if (upErr) { msg.textContent = 'Error: ' + upErr.message; return }
+
+            await supabase.from('status_changes').insert({
+                report_id: currentFoundId, old_status: 'missing', new_status: 'safe',
+                changed_by: finder, note: foundLocation
+            })
+
+            document.getElementById('found-modal').style.display = 'none'
+        })
+
+        /* Load on start */
+        fetchAndRender()
+        changedByMap = {}
+        const noteMap = {}
+        if (changes) for (const c of changes) {
+            if (!changedByMap[c.report_id] && c.changed_by) {
+                changedByMap[c.report_id] = c.changed_by
+                noteMap[c.report_id] = c.note
+            }
+        }
+        window._noteMap = noteMap    
+        const { data: changes } = await supabase.from('status_changes').select('report_id, changed_by, note, created_at').order('created_at', { ascending: false })    </script>
 </body>
 </html>

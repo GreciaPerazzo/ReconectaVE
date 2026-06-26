@@ -162,6 +162,23 @@
         .badge.safe{background:#dff1e7;color:#1f7a52}
         .found-btn{margin-top:8px;background:transparent;border:1.5px solid var(--btn);color:var(--btn);padding:8px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer}
         .found-btn:hover{background:var(--btn);color:#fff}
+        .more-btn{
+            align-self:flex-end;
+            margin-top:8px;
+            background:transparent;
+            color:#777;
+            border:1px solid #aaa;
+            padding:3px 8px;
+            border-radius:999px;
+            font-size:.68rem;
+            font-weight:600;
+            cursor:pointer;
+        }
+        .more-btn:hover{
+            color:#444;
+            border-color:#777;
+            background:transparent;
+        }
         .empty{color:var(--on-dark-muted);font-size:.9rem}
 
         /* Phones */
@@ -298,6 +315,8 @@
     </header>
 
     <main class="container">
+    <section id="detail-view" style="display:none;"></section>
+    <section id="list-view">    
         <input id="search" type="text" placeholder="Buscar por nombre o cédula..." />
 
         <h2 class="section-title">Buscando</h2>
@@ -354,6 +373,7 @@
                 <a class="numbox" href="tel:02125454655"><span class="n">545.46.55</span><span class="c">(0212)</span></a>
             </div>
         </div>
+    </section>
     </main>
 
     <!-- Footer -->
@@ -529,10 +549,56 @@
                     ${foundBy}
                     ${foundNote ? `<div class="meta"> ${escapeHtml(foundNote)}</div>` : ''}
                     ${!found ? `<button class="found-btn" data-id="${r.id}">Marcar como encontrado</button>` : ''}
+                    <button class="more-btn" data-id="${r.id}">Ver más</button>
                 </div>`
             const btn = card.querySelector('.found-btn')
             if (btn) btn.addEventListener('click', () => openFoundModal(r.id))
+            const moreBtn = card.querySelector('.more-btn')
+            if (moreBtn) moreBtn.addEventListener('click', () => {
+                showDetail(r.id)
+            })
             return card
+        }
+
+        function showDetail(id) {
+            const r = allReports.find(item => item.id === id)
+            if (!r) return
+
+            const detail = document.getElementById('detail-view')
+            const list = document.getElementById('list-view')
+
+            detail.innerHTML = `
+                <button class="found-btn" id="back-btn">← Volver</button>
+
+                <div class="card ${r.status === 'safe' ? 'card-found' : 'card-searching'}" style="margin-top:16px;">
+                    ${r.photo_url
+                        ? `<img class="photo" src="${r.photo_url}" alt="">`
+                        : `<div class="photo-placeholder">${escapeHtml((r.name||'?').charAt(0).toUpperCase())}</div>`
+                    }
+
+                    <div class="body">
+                        <div class="name">${escapeHtml(r.name)}</div>
+                        ${r.status === 'safe'
+                            ? '<span class="badge safe">Encontrado</span>'
+                            : '<span class="badge missing">Buscando</span>'
+                        }
+                        ${r.age != null ? `<div class="meta">${r.age} años</div>` : ''}
+                        ${r.cedula ? `<div class="meta">C.I. ${escapeHtml(r.cedula)}</div>` : ''}
+                        ${r.last_seen_location ? `<div class="meta">📍 ${escapeHtml(r.last_seen_location)}</div>` : ''}
+                        ${r.contact ? `<div class="meta">📞 ${escapeHtml(r.contact)}</div>` : ''}
+                        ${r.notes ? `<div class="meta"> ${escapeHtml(r.notes)}</div>` : ''}
+                    </div>
+                </div>
+            `
+
+            list.style.display = 'none'
+            detail.style.display = 'block'
+            window.scrollTo(0, 0)
+
+            document.getElementById('back-btn').addEventListener('click', () => {
+                detail.style.display = 'none'
+                list.style.display = 'block'
+            })
         }
 
         document.getElementById('search').addEventListener('input', render)

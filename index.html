@@ -108,6 +108,16 @@
                 </div>
 
                 <div class="field">
+                    <label for="cedula">Cédula (para facilitar la búsqueda)</label>
+                    <input type="text" id="cedula" placeholder="Ej. V-12.345.678" />
+                </div>
+
+                <div class="field">
+                    <label for="age">Edad <span class="req">*</span></label>
+                    <input type="number" id="age" placeholder="Ej. 24" min="0" max="120" />
+                </div>
+
+                <div class="field">
                     <label for="location">Dónde se le vio por última vez</label>
                     <input type="text" id="location" placeholder="Ej. Altamira, Caracas" />
                 </div>
@@ -179,12 +189,14 @@
 
         document.getElementById('submit-btn').addEventListener('click', async () => {
             const name = document.getElementById('name').value.trim()
+            const cedula = document.getElementById('cedula').value.trim()
+            const age = parseInt(document.getElementById('age').value)
             const location = document.getElementById('location').value.trim()
             const contact = document.getElementById('contact').value.trim()
             const msg = document.getElementById('form-msg')
 
-            if (!name || !contact) { msg.textContent = 'Nombre y contacto son obligatorios.'; return }
-
+            if (!name || !contact || !age) { msg.textContent = 'Nombre, contacto y edad son obligatorios.'; return }
+            
             let photo_url = null
             const file = document.getElementById('photo').files[0]
             if (file) {
@@ -195,13 +207,15 @@
             }
 
             const { error } = await supabase.from('reports').insert({
-                name, last_seen_location: location, contact, photo_url
+                name, cedula, age, last_seen_location: location, contact, photo_url
             })
 
             if (error) { msg.textContent = 'Error: ' + error.message }
             else {
                 msg.textContent = '✓ Reporte enviado.'
                 document.getElementById('name').value = ''
+                document.getElementById('cedula').value = ''
+                document.getElementById('age').value = ''
                 document.getElementById('location').value = ''
                 document.getElementById('contact').value = ''
                 photoInput.value = ''

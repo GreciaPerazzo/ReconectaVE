@@ -179,7 +179,53 @@
             border-color:#777;
             background:transparent;
         }
+        .share-title{
+            margin-top:14px;
+            font-size:.78rem;
+            font-weight:800;
+            color:var(--muted-cream);
+            text-transform:uppercase;
+            letter-spacing:.04em;
+        }
+        .share-row{
+            display:flex;
+            gap:8px;
+            margin-top:8px;
+            flex-wrap:wrap;
+        }
+        .share-row a,
+        .share-row button{
+            background:transparent;
+            border:1px solid #aaa;
+            color:#555;
+            border-radius:999px;
+            padding:6px 10px;
+            font-size:.78rem;
+            font-weight:700;
+            cursor:pointer;
+            text-decoration:none;
+            display:flex;
+            align-items:center;
+            gap:5px;
+        }
+        .share-row a:hover,
+        .share-row button:hover{
+            border-color:#777;
+            color:#333;
+        }
         .empty{color:var(--on-dark-muted);font-size:.9rem}
+        .share-icon{
+            width:38px;
+            height:38px;
+            padding:0 !important;
+            justify-content:center;
+        }
+
+        .share-icon img{
+            width:21px;
+            height:21px;
+            display:block;
+        }
         #detail-view{
             position:fixed;
             inset:0;
@@ -608,13 +654,33 @@
                         ${r.status === 'safe' && changedByMap[r.id] ? `<div class="meta">Encontrado por ${escapeHtml(changedByMap[r.id])}</div>` : ''}
                         ${r.status === 'safe' && window._noteMap && window._noteMap[r.id] ? `<div class="meta">📍 Encontrado/a en ${escapeHtml(window._noteMap[r.id])}</div>` : ''}
                         ${r.status === 'safe' && window._foundNotesMap && window._foundNotesMap[r.id] ? `<div class="meta">📝 ${escapeHtml(window._foundNotesMap[r.id])}</div>` : ''}
+                        <div class="share-title">Ayuda compartiendo</div>
+                        <div class="share-row">
+                            <a class="share-icon" title="WhatsApp" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent('Ayuda con este reporte de ReconectaVE: ' + (r.name || '') + '. ' + window.location.href)}">
+                                <img src="https://cdn.simpleicons.org/whatsapp/25D366" alt="WhatsApp">
+                            </a>
 
+                            <a class="share-icon" title="Facebook" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}">
+                                <img src="https://cdn.simpleicons.org/facebook/1877F2" alt="Facebook">
+                            </a>
+
+                            <a class="share-icon" title="X" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?text=${encodeURIComponent('Ayuda con este reporte de ReconectaVE: ' + (r.name || ''))}&url=${encodeURIComponent(window.location.href)}">
+                                <img src="https://cdn.simpleicons.org/x/000000" alt="X">
+                            </a>
+
+                            <button class="share-icon" id="instagram-share-btn" title="Instagram">
+                                <img src="https://cdn.simpleicons.org/instagram/E4405F" alt="Instagram">
+                            </button>
+
+                            <button class="share-icon" id="copy-share-btn" title="Copiar enlace">
+                                🔗
+                            </button>
+                        </div>
                     </div>
                     </div>
                 </div>
-            
             `
-
+            
             list.style.display = 'none'
             detail.style.display = 'block'
             window.scrollTo(0, 0)
@@ -622,6 +688,19 @@
             document.getElementById('back-btn').addEventListener('click', () => {
                 detail.style.display = 'none'
                 list.style.display = 'block'
+            })
+            const copyBtn = document.getElementById('copy-share-btn')
+            if (copyBtn) copyBtn.addEventListener('click', async () => {
+                const text = 'Ayuda con este reporte de ReconectaVE: ' + (r.name || '') + '. ' + window.location.href
+                await navigator.clipboard.writeText(text)
+                copyBtn.textContent = '✓ Copiado'
+            })
+            const instagramBtn = document.getElementById('instagram-share-btn')
+            if (instagramBtn) instagramBtn.addEventListener('click', async () => {
+                const text = 'Ayuda con este reporte de ReconectaVE: ' + (r.name || '') + '. ' + window.location.href
+                await navigator.clipboard.writeText(text)
+                instagramBtn.textContent = '✓ Copiado'
+                window.open('https://www.instagram.com/', '_blank')
             })
         }
 

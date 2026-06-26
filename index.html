@@ -202,7 +202,7 @@
         <div class="modal-card">
             <button id="close-form-btn" aria-label="Cerrar">&times;</button>
             <h3>Reportar persona</h3>
-            <p class="sub">Completa lo que sepas. Solo el nombre y tu contacto son obligatorios.</p>
+            <p class="sub">Completa lo que sepas. Solo el nombre, la edad y tu contacto son obligatorios.</p>
 
             <div class="field">
                 <label for="name">Nombre completo <span class="req">*</span></label>
@@ -210,7 +210,7 @@
             </div>
 
             <div class="field">
-                <label for="cedula">Cédula (opcional)</label>
+                <label for="cedula">Cédula </label>
                 <input type="text" id="cedula" placeholder="Ej. V-12.345.678" />
             </div>
 
@@ -224,7 +224,7 @@
                 <input type="text" id="location" placeholder="Ej. Altamira, Caracas" />
             </div>
             <div class="field">
-                <label for="notes">Notas adicionales (opcional)</label>
+                <label for="notes">Notas adicionales </label>
                 <input type="text" id="notes" placeholder="Ej. ropa, señas particulares, condición médica" />
             </div>
 
@@ -234,7 +234,7 @@
             </div>
 
             <div class="field">
-                <label>Foto (opcional)</label>
+                <label>Foto </label>
                 <div id="dropzone">
                     <span class="icon">
                         <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -266,6 +266,10 @@
             <div class="field">
             <label for="found-location">¿Dónde fue encontrada? <span class="req">*</span></label>
                 <input type="text" id="found-location" placeholder="Ej. Hospital de Caracas" />
+            </div>
+            <div class="field">
+                <label for="found-notes">Notas adicionales </label>
+                <input type="text" id="found-notes" placeholder="Ej. estado de la persona, detalles importantes" />
             </div>
             <button id="found-confirm" class="primary-btn">Confirmar</button>
             <button id="found-cancel" class="ghost-btn">Cancelar</button>
@@ -446,16 +450,19 @@
             const { data: reports } = await supabase.from('reports').select('*').order('created_at', { ascending: false })
             allReports = reports || []
 
-            const { data: changes } = await supabase.from('status_changes').select('report_id, changed_by, note, created_at').order('created_at', { ascending: false })
+            const { data: changes } = await supabase.from('status_changes').select('report_id, changed_by, note, found_notes, created_at').order('created_at', { ascending: false })
             changedByMap = {}
             const noteMap = {}
+            const foundNotesMap = {}
             if (changes) for (const c of changes) {
                 if (!changedByMap[c.report_id] && c.changed_by) {
                     changedByMap[c.report_id] = c.changed_by
                     noteMap[c.report_id] = c.note
+                    foundNotesMap[c.report_id] = c.found_notes
                 }
             }
             window._noteMap = noteMap
+            window._foundNotesMap = foundNotesMap
             render()
         }
 
@@ -503,6 +510,7 @@
                 : `<div class="photo-placeholder">${escapeHtml((r.name||'?').charAt(0).toUpperCase())}</div>`
             const badge = found ? '<span class="badge safe">Encontrado</span>' : '<span class="badge missing">Buscando</span>'
             const note = window._noteMap && window._noteMap[r.id]
+            const foundNote = window._foundNotesMap && window._foundNotesMap[r.id]
             const foundBy = (found && changedByMap[r.id])
                 ? `<div class="meta">Encontrado por ${escapeHtml(changedByMap[r.id])}${note ? ' ·📍' + escapeHtml(note) : ''}</div>`
                 : ''
@@ -516,8 +524,9 @@
                     ${r.cedula ? `<div class="meta">C.I. ${escapeHtml(r.cedula)}</div>` : ''}
                     ${r.last_seen_location ? `<div class="meta">📍 ${escapeHtml(r.last_seen_location)}</div>` : ''}
                     ${r.contact ? `<div class="meta">📞 ${escapeHtml(r.contact)}</div>` : ''}
-                    ${r.notes ? `<div class="meta">📝 ${escapeHtml(r.notes)}</div>` : ''}
+                    ${r.notes ? `<div class="meta"> ${escapeHtml(r.notes)}</div>` : ''}
                     ${foundBy}
+                    ${foundNote ? `<div class="meta"> ${escapeHtml(foundNote)}</div>` : ''}
                     ${!found ? `<button class="found-btn" data-id="${r.id}">Marcar como encontrado</button>` : ''}
                 </div>`
             const btn = card.querySelector('.found-btn')
@@ -533,6 +542,7 @@
             currentFoundId = id
             document.getElementById('finder-name').value = ''
             document.getElementById('found-location').value = ''
+            document.getElementById('found-notes').value = ''
             document.getElementById('found-msg').textContent = ''
             document.getElementById('found-modal').style.display = 'block'
         }
@@ -542,6 +552,7 @@
         document.getElementById('found-confirm').addEventListener('click', async () => {
             const finder = document.getElementById('finder-name').value.trim()
             const foundLocation = document.getElementById('found-location').value.trim()
+            const foundNotes = document.getElementById('found-notes').value.trim()
             const msg = document.getElementById('found-msg')
 
             if (!finder || !foundLocation) { msg.textContent = 'Por favor escribe tu nombre y dónde la encontraste.'; return }
@@ -551,7 +562,7 @@
 
             await supabase.from('status_changes').insert({
                 report_id: currentFoundId, old_status: 'missing', new_status: 'safe',
-                changed_by: finder, note: foundLocation
+                changed_by: finder, note: foundLocation, found_notes: foundNotes
             })
 
             document.getElementById('found-modal').style.display = 'none'

@@ -6,17 +6,24 @@
     <title>ReconectaVE</title>
     <style>
         :root{
-            --bg:#f7f8fa;
-            --surface:#ffffff;
-            --ink:#1b2330;
+            --bg:#1a3358;
+            --cream:#efe8d6;
+            --cream-line:#e7dfce;
+            --ink:#1f2733;
             --muted:#647082;
+            --muted-cream:#867c6b;
+            --on-dark:#eef2f8;
+            --on-dark-muted:#aebcd2;
             --line:#e4e8ee;
-            --accent:#0a40a8;          /* flag blue */
-            --accent-dark:#072e7d;
-            --ven-yellow:#ffcf00;
+            --btn:#2e6fd9;
+            --btn-dark:#2358b0;
+            --num-blue:#0a3f9c;
+            --ven-yellow:#ffce00;
             --ven-blue:#0a40a8;
-            --ven-red:#d21034;
+            --ven-red:#d11533;
+            --ven-green:#1f9d57;
             --required:#c0392b;
+            --phone-border:#a80e0e;
         }
         *{box-sizing:border-box}
         body{
@@ -28,7 +35,6 @@
         }
         .container{max-width:900px;margin:0 auto;padding:0 20px}
 
-        /* Venezuelan flag stripe */
         .flag-stripe{
             height:8px;
             background:linear-gradient(to bottom,
@@ -38,36 +44,48 @@
         }
 
         /* Header */
-        .site-header{background:var(--surface);border-bottom:1px solid var(--line);padding:30px 0 28px}
+        .site-header{padding:34px 0 30px}
+        .header-flex{display:flex;justify-content:space-between;align-items:center;gap:32px;flex-wrap:wrap}
+        .header-left{flex:1;min-width:280px}
         .eyebrow{
             font-family:ui-monospace,Menlo,Consolas,monospace;
             font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;
-            color:var(--ven-red);margin:0 0 8px;font-weight:600;
+            color:var(--ven-yellow);margin:0 0 8px;font-weight:600;
         }
-        .site-header h1{font-size:2.2rem;margin:0 0 8px;letter-spacing:-.02em}
-        .site-header .tagline{color:var(--muted);font-size:1.02rem;margin:0 0 22px;max-width:560px}
+        .site-header h1{font-size:2.3rem;margin:0 0 8px;letter-spacing:-.02em;color:#fff}
+        .site-header .tagline{color:var(--on-dark-muted);font-size:1.02rem;margin:0 0 22px;max-width:480px}
 
         #open-form-btn{
-            background:var(--accent);color:#fff;border:none;
-            padding:14px 22px;border-radius:10px;font-size:1rem;font-weight:600;
-            cursor:pointer;
+            background:var(--ven-yellow);color:var(--ink);border:none;
+            padding:14px 22px;border-radius:10px;font-size:1rem;font-weight:700;
+            cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.18);
         }
-        #open-form-btn:hover{background:var(--accent-dark)}
+        #open-form-btn:hover{background:#e6b900}
+        /* Stats donut (in header, no background) */
+        .stats-wrap{display:flex;align-items:center;gap:20px;flex-shrink:0}
+        .donut{--pct:0;width:150px;height:150px;border-radius:50%;
+            background:conic-gradient(var(--ven-red) calc(var(--pct)*1%), var(--ven-green) 0);
+            display:grid;place-items:center;flex-shrink:0}
+        .donut::before{content:"";width:106px;height:106px;border-radius:50%;background:var(--bg);grid-area:1/1}
+        .donut .pct{grid-area:1/1;z-index:1;font-weight:700;font-size:1.7rem;color:#fff}
+        .stats-legend{display:flex;flex-direction:column;gap:10px}
+        .stats-legend .row{display:flex;align-items:center;gap:8px;font-size:.95rem;color:var(--on-dark)}
+        .dot{width:12px;height:12px;border-radius:50%;display:inline-block}
+        .dot.red{background:var(--ven-red)}
+        .dot.green{background:var(--ven-green)}
+        .stats-total{font-size:.85rem;color:var(--on-dark-muted);margin-top:4px}
 
-        main.container{padding-top:8px;padding-bottom:8px}
-
-        /*  Modals */
+        /* Modals */
         #report-form,#found-modal{
             display:none;position:fixed;inset:0;
-            background:rgba(15,23,32,.55);z-index:50;
+            background:rgba(10,18,34,.6);z-index:50;
             padding:20px;overflow-y:auto;
         }
         #found-modal{z-index:60}
         .modal-card{
-            background:var(--surface);max-width:440px;margin:6vh auto;
+            background:#fff;max-width:440px;margin:6vh auto;
             border-radius:16px;padding:28px;
-            box-shadow:0 20px 50px rgba(0,0,0,.25);position:relative;
-            overflow:hidden;
+            box-shadow:0 20px 50px rgba(0,0,0,.3);position:relative;overflow:hidden;
         }
         .modal-card::before{
             content:"";position:absolute;top:0;left:0;right:0;height:6px;
@@ -82,31 +100,31 @@
         }
 
         .field{margin-bottom:16px}
-        .field label{display:block;font-size:.85rem;font-weight:600;margin-bottom:6px}
+        .field label{display:block;font-size:.85rem;font-weight:600;margin-bottom:6px;color:var(--ink)}
         .field label .req{color:var(--required)}
         .field input[type=text],.field input[type=number]{
             width:100%;padding:12px 14px;font-size:1rem;
             border:1px solid var(--line);border-radius:10px;
             background:#fff;color:var(--ink);
         }
-        .field input:focus{outline:2px solid var(--accent);border-color:var(--accent)}
+        .field input:focus{outline:2px solid var(--btn);border-color:var(--btn)}
 
         #dropzone{
             border:2px dashed #b8c2cc;border-radius:12px;
             padding:24px;text-align:center;cursor:pointer;
             color:var(--muted);transition:.15s;
         }
-        #dropzone:hover,#dropzone.drag{border-color:var(--accent);background:#eef3fb;color:var(--accent)}
+        #dropzone:hover,#dropzone.drag{border-color:var(--btn);background:#eef3fb;color:var(--btn)}
         #dropzone .icon{display:block;margin-bottom:10px;line-height:0}
         #photo-preview{display:none;max-width:100%;max-height:200px;border-radius:10px;margin-top:12px}
         #photo-name{display:block;margin-top:8px;font-size:.85rem;color:var(--muted)}
 
         .primary-btn{
-            width:100%;background:var(--accent);color:#fff;border:none;
+            width:100%;background:var(--btn);color:#fff;border:none;
             padding:14px;border-radius:10px;font-size:1rem;font-weight:600;
             cursor:pointer;margin-top:8px;
         }
-        .primary-btn:hover{background:var(--accent-dark)}
+        .primary-btn:hover{background:var(--btn-dark)}
         .ghost-btn{width:100%;background:none;border:none;color:var(--muted);padding:10px;font-size:.9rem;cursor:pointer;margin-top:6px}
         #form-msg{text-align:center;margin:14px 0 0;font-weight:500}
         #found-msg{text-align:center;margin:12px 0 0;font-weight:500;color:var(--required)}
@@ -114,55 +132,69 @@
         /* List */
         #search{
             width:100%;padding:12px 14px;font-size:1rem;
-            border:1px solid var(--line);border-radius:10px;margin:28px 0 0;
+            border:1px solid transparent;border-radius:10px;margin:28px 0 0;
+            background:var(--cream);color:var(--ink);
         }
-        #search:focus{outline:2px solid var(--accent);border-color:var(--accent)}
-        .section-title{font-size:1.5rem;margin:36px 0 0}
+        #search::placeholder{color:#9a9081}
+        #search:focus{outline:2px solid var(--ven-yellow)}
+        .section-title{font-size:1.5rem;margin:36px 0 0;color:var(--on-dark);display:inline-block}
         .section-title::after{
-            content:"";display:block;width:46px;height:3px;margin-top:8px;
+            content:"";display:block;width:100%;height:3px;margin-top:8px;
             background:linear-gradient(to right,var(--ven-yellow),var(--ven-blue),var(--ven-red));
             border-radius:2px;
         }
-        .sub-title{font-size:1rem;color:var(--muted);margin:20px 0 10px;font-weight:600}
+        .sub-title{font-size:1rem;color:var(--on-dark-muted);margin:20px 0 10px;font-weight:600}
         .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px}
         .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:10px}
         .two-col .sub-title{margin-top:0}
         @media(max-width:640px){.two-col{grid-template-columns:1fr}}
-        .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
-        .card .photo{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#e9edf0}
-        .card .photo-placeholder{width:100%;aspect-ratio:1/1;display:grid;place-items:center;background:#e9edf0;color:#9aa7b1;font-size:2.4rem;font-weight:700}
+
+        .card{background:var(--cream);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;border:2px solid transparent}
+        .card-searching{border-color:var(--ven-red)}
+        .card-found{border-color:var(--ven-green)}
+        .card .photo{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#ece3d1}
+        .card .photo-placeholder{width:100%;aspect-ratio:1/1;display:grid;place-items:center;background:#ece3d1;color:#b3a890;font-size:2.4rem;font-weight:700}
         .card .body{padding:12px;display:flex;flex-direction:column;gap:2px}
-        .card .name{font-weight:700;font-size:1rem}
-        .card .meta{font-size:.82rem;color:var(--muted)}
-        .help-section{margin-top:40px}
-        .phone-group{margin-bottom:20px}
-        .phone-group h4{font-size:.95rem;margin:0 0 8px;color:var(--ink)}
-        .phones{display:flex;flex-wrap:wrap;gap:8px}
-        .phone{
-            display:flex;flex-direction:column;text-decoration:none;
-            background:var(--surface);border:1px solid var(--line);border-radius:10px;
-            padding:10px 16px;min-width:110px;
-        }
-        .phone .num{font-weight:700;color:var(--accent);font-size:1.1rem}
-        .phone .who{font-size:.78rem;color:var(--muted)}
-        .phone:hover{border-color:var(--accent)}
+        .card .name{font-weight:700;font-size:1rem;color:var(--ink)}
+        .card .meta{font-size:.82rem;color:var(--muted-cream)}
         .badge{display:inline-block;align-self:flex-start;font-size:.72rem;font-weight:700;padding:3px 8px;border-radius:999px;margin:4px 0}
-        .badge.missing{background:#fdeceb;color:#c0392b}
-        .badge.safe{background:#e8f5ee;color:#2c7a57}
-        .found-btn{margin-top:8px;background:#fff;border:1.5px solid var(--accent);color:var(--accent);padding:8px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer}
-        .found-btn:hover{background:var(--accent);color:#fff}
-        .empty{color:var(--muted);font-size:.9rem}
+        .badge.missing{background:#fbe2e4;color:#c0392b}
+        .badge.safe{background:#dff1e7;color:#1f7a52}
+        .found-btn{margin-top:8px;background:transparent;border:1.5px solid var(--btn);color:var(--btn);padding:8px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer}
+        .found-btn:hover{background:var(--btn);color:#fff}
+        .empty{color:var(--on-dark-muted);font-size:.9rem}
+
+        /* Phones */
+        .help-section{margin-top:40px}
+        .phone-h{color:var(--on-dark);font-size:1rem;margin:22px 0 10px;font-weight:600}
+        .emergency-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+        @media(max-width:560px){.emergency-row{grid-template-columns:repeat(2,1fr)}}
+        .ephone{display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none}
+        .ecompany{color:var(--on-dark-muted);font-size:.82rem;font-weight:600}
+        .enum{  
+            width:100%;text-align:center;background:var(--cream);border:2px solid var(--phone-border);
+            border-radius:10px;padding:12px;color:var(--num-blue);font-weight:700;font-size:1.3rem;
+        }
+        .ephone:hover .enum{border-color:var(--ven-yellow)}
+        .num-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+        .numbox{
+            display:flex;flex-direction:column;text-decoration:none;
+            background:var(--cream);border:2px solid var(--phone-border);border-radius:10px;padding:10px 14px;
+        }
+        .numbox .n{color:var(--num-blue);font-weight:700;font-size:1.1rem}
+        .numbox .c{color:var(--muted-cream);font-size:.78rem}
+        .numbox:hover{border-color:var(--ven-yellow)}
 
         /* Footer */
         .site-footer{margin-top:48px}
-        .footer-inner{background:var(--ink);color:#c2cbd9;padding:30px 0 44px}
-        .footer-inner p{margin:0 0 12px;font-size:.9rem;max-width:640px}
-        .stars-row{letter-spacing:6px;color:var(--ven-yellow);font-size:1rem;margin:0 0 14px}
+        .footer-inner{background:#13284a;color:#aebcd2;padding:30px 0 44px}
+        .stars-row{display:flex;justify-content:space-between;color:var(--ven-yellow);font-size:1.1rem;margin:0 0 18px}
+        .footer-inner p{margin:0 0 12px;font-size:.9rem;max-width:680px}
+        .credit{font-weight:600;color:#dde4ef}
         .footer-note{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.78rem;color:#8b97a8}
     </style>
 </head>
 <body>
-    <!-- Top flag stripe -->
     <div class="flag-stripe"></div>
 
     <!-- Report modal -->
@@ -239,16 +271,25 @@
 
     <!-- Header -->
     <header class="site-header">
-        <div class="container">
-            <p class="eyebrow">Emergencia · Sismo del 24 de junio</p>
-            <h1>ReconectaVE</h1>
-            <p class="tagline">Una herramienta ciudadana para reunir a las familias venezolanas. Reporta a quien buscas, o avisa cuando lo encuentres.</p>
-            <button id="open-form-btn">Reportar a persona desaparecida</button>
+        <div class="container header-flex">
+            <div class="header-left">
+                <p class="eyebrow"> Terremoto 24 de junio · Emergencia </p>
+                <h1>ReconectaVE</h1>
+                <p class="tagline">Aquí trabajamos juntos. BUSCA, si no aparece a quien buscas, REGISTRA y AYUDA avisando cuando reconozcas a alguien. Cada reporte acerca a alguien a casa.</p>
+                <button id="open-form-btn">Reportar a persona desaparecida</button>
+            </div>
+            <div class="stats-wrap">
+                <div class="donut" id="donut"><span class="pct" id="donut-pct">0%</span></div>
+                <div class="stats-legend">
+                    <div class="row"><span class="dot red"></span> <span id="stat-missing">0</span> aún buscando</div>
+                    <div class="row"><span class="dot green"></span> <span id="stat-found">0</span> encontrados</div>
+                    <div class="stats-total"><span id="stat-total">0</span> reportadas en total</div>
+                </div>
+            </div>
         </div>
     </header>
 
     <main class="container">
-        <!-- The list -->
         <input id="search" type="text" placeholder="Buscar por nombre o cédula..." />
 
         <h2 class="section-title">Buscando</h2>
@@ -278,39 +319,31 @@
         <div class="help-section">
             <h2 class="section-title">Teléfonos de emergencia · Caracas</h2>
 
-            <div class="phone-group">
-                <h4>Emergencias</h4>
-                <div class="phones">
-                    <a class="phone" href="tel:171"><span class="num">171</span><span class="who">CANTV</span></a>
-                    <a class="phone" href="tel:*1"><span class="num">*1</span><span class="who">Movilnet</span></a>
-                    <a class="phone" href="tel:112"><span class="num">112</span><span class="who">Digitel</span></a>
-                    <a class="phone" href="tel:911"><span class="num">911</span><span class="who">Movistar</span></a>
-                </div>
+            <h4 class="phone-h">Emergencias</h4>
+            <div class="emergency-row">
+                <a class="ephone" href="tel:171"><span class="ecompany">CANTV</span><span class="enum">171</span></a>
+                <a class="ephone" href="tel:*1"><span class="ecompany">Movilnet</span><span class="enum">*1</span></a>
+                <a class="ephone" href="tel:112"><span class="ecompany">Digitel</span><span class="enum">112</span></a>
+                <a class="ephone" href="tel:911"><span class="ecompany">Movistar</span><span class="enum">911</span></a>
             </div>
 
-            <div class="phone-group">
-                <h4>Aeroambulancias</h4>
-                <div class="phones">
-                    <a class="phone" href="tel:02129932541"><span class="num">993.25.41</span><span class="who">(0212)</span></a>
-                    <a class="phone" href="tel:02129928980"><span class="num">992.89.80</span><span class="who">(0212)</span></a>
-                    <a class="phone" href="tel:02129917940"><span class="num">991.79.40</span><span class="who">(0212)</span></a>
-                </div>
+            <h4 class="phone-h">Aeroambulancias</h4>
+            <div class="num-grid">
+                <a class="numbox" href="tel:02129932541"><span class="n">993.25.41</span><span class="c">(0212)</span></a>
+                <a class="numbox" href="tel:02129928980"><span class="n">992.89.80</span><span class="c">(0212)</span></a>
+                <a class="numbox" href="tel:02129917940"><span class="n">991.79.40</span><span class="c">(0212)</span></a>
             </div>
 
-            <div class="phone-group">
-                <h4>Rescarven</h4>
-                <div class="phones">
-                    <a class="phone" href="tel:02129936911"><span class="num">993.69.11</span><span class="who">(0212)</span></a>
-                    <a class="phone" href="tel:02129931310"><span class="num">993.13.10</span><span class="who">(0212)</span></a>
-                </div>
+            <h4 class="phone-h">Rescarven</h4>
+            <div class="num-grid">
+                <a class="numbox" href="tel:02129936911"><span class="n">993.69.11</span><span class="c">(0212)</span></a>
+                <a class="numbox" href="tel:02129931310"><span class="n">993.13.10</span><span class="c">(0212)</span></a>
             </div>
 
-            <div class="phone-group">
-                <h4>Ambulancia Metropolitano</h4>
-                <div class="phones">
-                    <a class="phone" href="tel:02125454545"><span class="num">545.45.45</span><span class="who">(0212)</span></a>
-                    <a class="phone" href="tel:02125454655"><span class="num">545.46.55</span><span class="who">(0212)</span></a>
-                </div>
+            <h4 class="phone-h">Ambulancia Metropolitano</h4>
+            <div class="num-grid">
+                <a class="numbox" href="tel:02125454545"><span class="n">545.45.45</span><span class="c">(0212)</span></a>
+                <a class="numbox" href="tel:02125454655"><span class="n">545.46.55</span><span class="c">(0212)</span></a>
             </div>
         </div>
     </main>
@@ -320,10 +353,11 @@
         <div class="flag-stripe"></div>
         <div class="footer-inner">
             <div class="container">
-                <div class="stars-row">★ ★ ★ ★ ★ ★ ★</div>
-                <p>ReconectaVE es una herramienta ciudadana y sin fines de lucro, hecha por voluntarios para reunir a las familias tras el sismo. No solicitamos dinero ni donaciones.</p>
+                <div class="stars-row"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+                <p>ReconectaVE es una herramienta ciudadana y sin fines de lucro. No solicitamos dinero ni donaciones.</p>
                 <p>Ante una emergencia, llama siempre a los organismos de rescate. Verifica la información antes de compartirla.</p>
-                <p class="footer-note">Iniciativa no partidista · Para el pueblo de Venezuela 🇻🇪</p>
+                <p class="credit">Creado de manera voluntaria por Grecia Perazzo para reunir a las familias venezolanas. 🇻🇪</p>
+                <p class="footer-note">Iniciativa no partidista · Para el pueblo de Venezuela</p>
             </div>
         </div>
     </footer>
@@ -429,6 +463,19 @@
             fill('buscando-adultos',   filtered.filter(r => r.status === 'missing' && !isKid(r)))
             fill('encontrados-ninos',  filtered.filter(r => r.status === 'safe' && isKid(r)))
             fill('encontrados-adultos',filtered.filter(r => r.status === 'safe' && !isKid(r)))
+            updateStats()
+        }
+
+        function updateStats() {
+            const total = allReports.length
+            const found = allReports.filter(r => r.status === 'safe').length
+            const missing = total - found
+            const pctMissing = total ? Math.round((missing / total) * 100) : 0
+            document.getElementById('stat-total').textContent = total
+            document.getElementById('stat-found').textContent = found
+            document.getElementById('stat-missing').textContent = missing
+            document.getElementById('donut-pct').textContent = pctMissing + '%'
+            document.getElementById('donut').style.setProperty('--pct', pctMissing)
         }
 
         function fill(id, list) {
@@ -442,8 +489,8 @@
 
         function createCard(r) {
             const card = document.createElement('div')
-            card.className = 'card'
             const found = r.status === 'safe'
+            card.className = 'card ' + (found ? 'card-found' : 'card-searching')
             const photo = r.photo_url
                 ? `<img class="photo" src="${r.photo_url}" alt="">`
                 : `<div class="photo-placeholder">${escapeHtml((r.name||'?').charAt(0).toUpperCase())}</div>`

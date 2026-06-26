@@ -565,11 +565,6 @@
                     ${badge}
                     ${r.age != null ? `<div class="meta">${r.age} años</div>` : ''}
                     ${r.cedula ? `<div class="meta">C.I. ${escapeHtml(r.cedula)}</div>` : ''}
-                    ${r.last_seen_location ? `<div class="meta">📍 ${escapeHtml(r.last_seen_location)}</div>` : ''}
-                    ${r.contact ? `<div class="meta">📞 ${escapeHtml(r.contact)}</div>` : ''}
-                    ${r.notes ? `<div class="meta"> ${escapeHtml(r.notes)}</div>` : ''}
-                    ${foundBy}
-                    ${foundNote ? `<div class="meta"> ${escapeHtml(foundNote)}</div>` : ''}
                     ${!found ? `<button class="found-btn" data-id="${r.id}">Marcar como encontrado</button>` : ''}
                     <button class="more-btn" data-id="${r.id}">Ver más</button>
                 </div>`
@@ -609,7 +604,11 @@
                         ${r.cedula ? `<div class="meta">C.I. ${escapeHtml(r.cedula)}</div>` : ''}
                         ${r.last_seen_location ? `<div class="meta">📍 ${escapeHtml(r.last_seen_location)}</div>` : ''}
                         ${r.contact ? `<div class="meta">📞 ${escapeHtml(r.contact)}</div>` : ''}
-                        ${r.notes ? `<div class="meta"> ${escapeHtml(r.notes)}</div>` : ''}
+                        ${r.notes ? `<div class="meta">📝 ${escapeHtml(r.notes)}</div>` : ''}
+                        ${r.status === 'safe' && changedByMap[r.id] ? `<div class="meta">Encontrado por ${escapeHtml(changedByMap[r.id])}</div>` : ''}
+                        ${r.status === 'safe' && window._noteMap && window._noteMap[r.id] ? `<div class="meta">📍 Encontrado/a en ${escapeHtml(window._noteMap[r.id])}</div>` : ''}
+                        ${r.status === 'safe' && window._foundNotesMap && window._foundNotesMap[r.id] ? `<div class="meta">📝 ${escapeHtml(window._foundNotesMap[r.id])}</div>` : ''}
+
                     </div>
                     </div>
                 </div>

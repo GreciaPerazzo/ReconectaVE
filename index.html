@@ -180,6 +180,28 @@
             background:transparent;
         }
         .empty{color:var(--on-dark-muted);font-size:.9rem}
+        #detail-view{
+            position:fixed;
+            inset:0;
+            background:var(--bg);
+            z-index:70;
+            padding:18px;
+            overflow-y:auto;
+        }
+        .detail-inner{
+            max-width:420px;
+            margin:0 auto;
+        }
+        .detail-inner .card{
+            margin-top:14px;
+        }
+        .detail-inner .photo,
+        .detail-inner .photo-placeholder{
+            max-height:360px;
+        }
+        #back-btn{
+            margin-bottom:10px;
+        }
 
         /* Phones */
         .help-section{margin-top:40px}
@@ -568,9 +590,10 @@
             const list = document.getElementById('list-view')
 
             detail.innerHTML = `
-                <button class="found-btn" id="back-btn">← Volver</button>
+                <div class="detail-inner">
+                    <button class="found-btn" id="back-btn">← Volver</button>
 
-                <div class="card ${r.status === 'safe' ? 'card-found' : 'card-searching'}" style="margin-top:16px;">
+                    <div class="card ${r.status === 'safe' ? 'card-found' : 'card-searching'}">
                     ${r.photo_url
                         ? `<img class="photo" src="${r.photo_url}" alt="">`
                         : `<div class="photo-placeholder">${escapeHtml((r.name||'?').charAt(0).toUpperCase())}</div>`
@@ -588,7 +611,9 @@
                         ${r.contact ? `<div class="meta">📞 ${escapeHtml(r.contact)}</div>` : ''}
                         ${r.notes ? `<div class="meta"> ${escapeHtml(r.notes)}</div>` : ''}
                     </div>
+                    </div>
                 </div>
+            
             `
 
             list.style.display = 'none'

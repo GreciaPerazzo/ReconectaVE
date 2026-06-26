@@ -92,7 +92,10 @@
         #search:focus{outline:2px solid var(--accent);border-color:var(--accent)}
         .section-title{font-size:1.5rem;margin:36px 0 0}
         .sub-title{font-size:1rem;color:var(--muted);margin:20px 0 10px;font-weight:600}
-        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px}
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px}
+        .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:10px}
+        .two-col .sub-title{margin-top:0}
+        @media(max-width:640px){.two-col{grid-template-columns:1fr}}
         .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
         .card .photo{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#e9edf0}
         .card .photo-placeholder{width:100%;aspect-ratio:1/1;display:grid;place-items:center;background:#e9edf0;color:#9aa7b1;font-size:2.4rem;font-weight:700}
@@ -190,16 +193,28 @@
         <input id="search" type="text" placeholder="Buscar por nombre o cédula..." />
 
         <h2 class="section-title">Buscando</h2>
-        <h3 class="sub-title">Niños</h3>
-        <div class="grid" id="buscando-ninos"></div>
-        <h3 class="sub-title">Adultos</h3>
-        <div class="grid" id="buscando-adultos"></div>
+        <div class="two-col">
+            <div>
+                <h3 class="sub-title">Niños</h3>
+                <div class="grid" id="buscando-ninos"></div>
+            </div>
+            <div>
+                <h3 class="sub-title">Adultos</h3>
+                <div class="grid" id="buscando-adultos"></div>
+            </div>
+        </div>
 
         <h2 class="section-title">Encontrados</h2>
-        <h3 class="sub-title">Niños</h3>
-        <div class="grid" id="encontrados-ninos"></div>
-        <h3 class="sub-title">Adultos</h3>
-        <div class="grid" id="encontrados-adultos"></div>
+        <div class="two-col">
+            <div>
+                <h3 class="sub-title">Niños</h3>
+                <div class="grid" id="encontrados-ninos"></div>
+            </div>
+            <div>
+                <h3 class="sub-title">Adultos</h3>
+                <div class="grid" id="encontrados-adultos"></div>
+            </div>
+        </div>
     </div>
 
     <script type="module">
@@ -334,7 +349,7 @@
                     ${badge}
                     ${r.age != null ? `<div class="meta">${r.age} años</div>` : ''}
                     ${r.cedula ? `<div class="meta">C.I. ${escapeHtml(r.cedula)}</div>` : ''}
-                    ${r.last_seen_location ? `<div class="meta"> ${escapeHtml(r.last_seen_location)}</div>` : ''}
+                    ${r.last_seen_location ? `<div class="meta">📍 ${escapeHtml(r.last_seen_location)}</div>` : ''}
                     ${r.contact ? `<div class="meta">📞 ${escapeHtml(r.contact)}</div>` : ''}
                     ${foundBy}
                     ${!found ? `<button class="found-btn" data-id="${r.id}">Marcar como encontrado</button>` : ''}
@@ -374,19 +389,11 @@
             })
 
             document.getElementById('found-modal').style.display = 'none'
+            fetchAndRender()
         })
 
         /* Load on start */
         fetchAndRender()
-        changedByMap = {}
-        const noteMap = {}
-        if (changes) for (const c of changes) {
-            if (!changedByMap[c.report_id] && c.changed_by) {
-                changedByMap[c.report_id] = c.changed_by
-                noteMap[c.report_id] = c.note
-            }
-        }
-        window._noteMap = noteMap    
-        const { data: changes } = await supabase.from('status_changes').select('report_id, changed_by, note, created_at').order('created_at', { ascending: false })    </script>
+    </script>
 </body>
 </html>

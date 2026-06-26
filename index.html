@@ -7,7 +7,44 @@
 </head>
 <body>
     <h1>ReconectaVE</h1>
+    <h2>Reportar persona desaparecida</h2>
+    <button id="open-form-btn">Reportar a persona desaparecida</button>
 
+    <div id="report-form" style="display: none;">
+        <input id="name" placeholder="Nombre completo *" />
+        <input id="location" placeholder="Dónde se le vio por última vez" />
+        <input id="contact" placeholder="Tu contacto (teléfono o email) *" />
+        <button id="submit-btn">Reportar</button>
+        <p id="form-msg"></p>
+    </div>
     
+    <script type="module">
+        import { supabase } from './supabase.js'
+
+        document.getElementById('open-form-btn').addEventListener('click', () => {
+            document.getElementById('report-form').style.display = 'block'
+        })
+
+        document.getElementById('submit-btn').addEventListener('click', async () => {
+            const name = document.getElementById('name').value.trim()
+            const location = document.getElementById('location').value.trim()
+            const contact = document.getElementById('contact').value.trim()
+            const msg = document.getElementById('form-msg')
+
+            if (!name || !contact) { msg.textContent = 'Nombre y contacto son obligatorios.'; return }
+
+            const { error } = await supabase.from('reports').insert({
+                name, last_seen_location: location, contact
+            })
+
+            if (error) { msg.textContent = 'Error: ' + error.message }
+            else {
+                msg.textContent = '✓ Reporte enviado.'
+                document.getElementById('name').value = ''
+                document.getElementById('location').value = ''
+                document.getElementById('contact').value = ''
+            }
+        })
+    </script>
 </body>
 </html>

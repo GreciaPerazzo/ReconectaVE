@@ -31,7 +31,8 @@
             font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
             background:var(--bg);
             color:var(--ink);
-            line-height:1.5;
+            line-height:1.6;
+            font-size:17px;
         }
         .container{max-width:900px;margin:0 auto;padding:0 20px}
 
@@ -154,24 +155,24 @@
         .card-found{border-color:var(--ven-green)}
         .card .photo{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#ece3d1}
         .card .photo-placeholder{width:100%;aspect-ratio:1/1;display:grid;place-items:center;background:#ece3d1;color:#b3a890;font-size:2.4rem;font-weight:700}
-        .card .body{padding:12px;display:flex;flex-direction:column;gap:2px}
-        .card .name{font-weight:700;font-size:1rem;color:var(--ink)}
-        .card .meta{font-size:.82rem;color:var(--muted-cream)}
-        .badge{display:inline-block;align-self:flex-start;font-size:.72rem;font-weight:700;padding:3px 8px;border-radius:999px;margin:4px 0}
+        .card .body{padding:14px;display:flex;flex-direction:column;gap:4px}
+        .card .name{font-weight:800;font-size:1.08rem;color:var(--ink);line-height:1.25}
+        .card .meta{font-size:.92rem;color:var(--muted-cream);line-height:1.35}
+        .badge{display:inline-block;align-self:flex-start;font-size:.82rem;font-weight:800;padding:4px 10px;border-radius:999px;margin:5px 0}
         .badge.missing{background:#fbe2e4;color:#c0392b}
         .badge.safe{background:#dff1e7;color:#1f7a52}
-        .found-btn{margin-top:8px;background:transparent;border:1.5px solid var(--btn);color:var(--btn);padding:8px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer}
+        .found-btn{margin-top:10px;background:transparent;border:1.5px solid var(--btn);color:var(--btn);padding:9px;border-radius:8px;font-size:.92rem;font-weight:700;cursor:pointer}
         .found-btn:hover{background:var(--btn);color:#fff}
         .more-btn{
             align-self:flex-end;
-            margin-top:8px;
+            margin-top:10px;
             background:transparent;
             color:#777;
             border:1px solid #aaa;
-            padding:3px 8px;
+            padding:4px 10px;
             border-radius:999px;
-            font-size:.68rem;
-            font-weight:600;
+            font-size:.78rem;
+            font-weight:700;
             cursor:pointer;
         }
         .more-btn:hover{
@@ -311,7 +312,7 @@
             </div>
 
             <div class="field">
-                <label for="age">Edad <span class="req">*</span></label>
+                <label for="age">Edad </label>
                 <input type="number" id="age" placeholder="Ej. 24" min="0" max="120" />
             </div>
 
@@ -504,13 +505,14 @@
         document.getElementById('submit-btn').addEventListener('click', async () => {
             const name = document.getElementById('name').value.trim()
             const cedula = document.getElementById('cedula').value.trim()
-            const age = parseInt(document.getElementById('age').value)
+            const ageValue = document.getElementById('age').value.trim()
+            const age = ageValue ? parseInt(ageValue) : null
             const location = document.getElementById('location').value.trim()
             const notes = document.getElementById('notes').value.trim()
             const contact = document.getElementById('contact').value.trim()
             const msg = document.getElementById('form-msg')
 
-            if (!name || !contact || !age) { msg.textContent = 'Nombre, contacto y edad son obligatorios.'; return }
+            if (!name || !contact) { msg.textContent = 'Nombre y contacto son obligatorios.'; return }
 
             let photo_url = null
             const file = document.getElementById('photo').files[0]

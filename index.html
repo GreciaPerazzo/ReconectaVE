@@ -119,12 +119,12 @@
         .stats-total{font-size:.85rem;color:var(--on-dark-muted);margin-top:4px}
 
         /* Modals */
-        #report-form,#found-modal{
+        #report-form,#found-modal,#center-form-modal{
             display:none;position:fixed;inset:0;
             background:rgba(10,18,34,.6);z-index:50;
             padding:20px;overflow-y:auto;
         }
-        #found-modal{z-index:60}
+        #found-modal,#center-form-modal{z-index:60}
         .modal-card{
             background:#fff;max-width:440px;margin:6vh auto;
             border-radius:16px;padding:28px;
@@ -145,10 +145,16 @@
         .field{margin-bottom:16px}
         .field label{display:block;font-size:.85rem;font-weight:600;margin-bottom:6px;color:var(--ink)}
         .field label .req{color:var(--required)}
-        .field input[type=text],.field input[type=number]{
-            width:100%;padding:12px 14px;font-size:1rem;
-            border:1px solid var(--line);border-radius:10px;
-            background:#fff;color:var(--ink);
+        .field input[type=text],
+        .field input[type=number],
+        .field select{
+            width:100%;
+            padding:12px 14px;
+            font-size:1rem;
+            border:1px solid var(--line);
+            border-radius:10px;
+            background:#fff;
+            color:var(--ink);
         }
         .field input:focus{outline:2px solid var(--btn);border-color:var(--btn)}
 
@@ -161,7 +167,39 @@
         #dropzone .icon{display:block;margin-bottom:10px;line-height:0}
         #photo-preview{display:none;max-width:100%;max-height:200px;border-radius:10px;margin-top:12px}
         #photo-name{display:block;margin-top:8px;font-size:.85rem;color:var(--muted)}
-
+        #center-dropzone{
+            border:2px dashed #b8c2cc;
+            border-radius:12px;
+            padding:24px;
+            text-align:center;
+            cursor:pointer;
+            color:var(--muted);
+            transition:.15s;
+        }
+        #center-dropzone:hover,
+        #center-dropzone.drag{
+            border-color:var(--btn);
+            background:#eef3fb;
+            color:var(--btn);
+        }
+        #center-dropzone .icon{
+            display:block;
+            margin-bottom:10px;
+            line-height:0;
+        }
+        #center-photo-preview{
+            display:none;
+            max-width:100%;
+            max-height:200px;
+            border-radius:10px;
+            margin-top:12px;
+        }
+        #center-photo-name{
+            display:block;
+            margin-top:8px;
+            font-size:.85rem;
+            color:var(--muted);
+        }
         .primary-btn{
             width:100%;background:var(--btn);color:#fff;border:none;
             padding:14px;border-radius:10px;font-size:1rem;font-weight:600;
@@ -324,6 +362,72 @@
         .numbox .c{color:var(--muted-cream);font-size:.78rem}
         .numbox:hover{border-color:var(--ven-yellow)}
 
+        /* Centros de ayuda */
+        .help-report-btn{
+            background:var(--ven-yellow);
+            color:var(--ink);
+            border:none;
+            padding:12px 18px;
+            border-radius:10px;
+            font-size:1rem;
+            font-weight:800;
+            cursor:pointer;
+            margin:12px 0 18px;
+            box-shadow:0 4px 14px rgba(0,0,0,.18);
+        }
+        .help-report-btn:hover{background:#e6b900}
+        .center-tabs{
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
+            margin:12px 0 18px;
+        }
+        .center-tab{
+            background:transparent;
+            color:var(--on-dark);
+            border:1px solid rgba(255,255,255,.35);
+            padding:7px 11px;
+            border-radius:999px;
+            font-size:.82rem;
+            font-weight:800;
+            cursor:pointer;
+        }
+        .center-tab:hover,
+        .center-tab.active{
+            border-color:var(--ven-yellow);
+            color:var(--ven-yellow);
+        }
+        .center-photo{
+            width:100%;
+            aspect-ratio:16/10;
+            object-fit:cover;
+            border-radius:10px;
+            margin-bottom:10px;
+            background:#ece3d1;
+        }
+        .centers-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+            gap:14px;
+        }
+        .centers-grid .external-card{
+            padding:10px;
+            border-radius:12px;
+        }
+        .centers-grid .external-card strong{
+            font-size:.92rem;
+            line-height:1.2;
+        }
+        .centers-grid .external-card span{
+            font-size:.78rem;
+            line-height:1.3;
+        }
+        .centers-grid .center-photo{
+            aspect-ratio:1/1;
+            border-radius:10px;
+            margin-bottom:8px;
+        }
+        
         /*for other sources*/
         .external-section{
             margin-top:40px;
@@ -377,8 +481,9 @@
     <nav class="quick-nav">
         <a href="#buscando-section">Buscando</a>
         <a href="#encontrados-section">Encontrados</a>
-        <a href="#ninez-section">Ayuda para niños, niñas y adolescentes</a>
-        <a href="#plataformas-section">Plataformas de ayuda</a>
+        <a href="#ninos-section">Ayuda para niños, niñas y adolescentes</a>
+        <a href="#plataformas-section">Plataformas de Ayuda</a>
+        <a href="#centros-section">Centros de ayuda</a>
         <a href="#telefonos-section">Teléfonos de emergencia</a>
     </nav>
 
@@ -436,6 +541,80 @@
 
             <button id="submit-btn" class="primary-btn">Reportar</button>
             <p id="form-msg"></p>
+        </div>
+    </div>
+
+    <!-- Report help center modal -->
+    <div id="center-form-modal">
+        <div class="modal-card">
+            <button id="close-center-form-btn" aria-label="Cerrar">&times;</button>
+            <h3>Reportar centro de ayuda</h3>
+            <p class="sub">Agrega un lugar donde las personas puedan conseguir ayuda o recursos.</p>
+
+            <div class="field">
+                <label for="center-name">Nombre del lugar <span class="req">*</span></label>
+                <input type="text" id="center-name" placeholder="Ej. Casa de Venezuela Orlando" />
+            </div>
+
+            <div class="field">
+                <label for="center-category">Tipo de ayuda <span class="req">*</span></label>
+                <select id="center-category">
+                    <option value="">Selecciona una opción</option>
+                    <option>Centro de acopio</option>
+                    <option>Agua potable</option>
+                    <option>Comida / cocina</option>
+                    <option>Hospital funcionando</option>
+                    <option>Refugio / albergue</option>
+                    <option>Gasolina</option>
+                    <option>Farmacia abierta</option>
+                    <option>Punto de carga</option>
+                    <option>Internet / señal</option>
+                    <option>Otro recurso</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="center-location">Dirección o zona <span class="req">*</span></label>
+                <input type="text" id="center-location" placeholder="Ej. Caracas, Chacao, Av. principal..." />
+            </div>
+
+            <div class="field">
+                <label for="center-details">Detalles</label>
+                <input type="text" id="center-details" placeholder="Ej. reciben agua, comida, ropa, medicinas..." />
+            </div>
+
+            <div class="field">
+                <label for="center-hours">Horario</label>
+                <input type="text" id="center-hours" placeholder="Ej. 9:00 a. m. - 5:00 p. m." />
+            </div>
+
+            <div class="field">
+                <label for="center-contact">Contacto</label>
+                <input type="text" id="center-contact" placeholder="Teléfono, WhatsApp, Instagram o email" />
+            </div>
+
+            <div class="field">
+            <label>Foto</label>
+            <div id="center-dropzone">
+                <span class="icon">
+                    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 16V4M12 4l-4 4M12 4l4 4"></path>
+                        <path d="M4 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"></path>
+                    </svg>
+                </span>
+
+                Arrastra una foto aquí o haz clic para elegir
+
+                <img id="center-photo-preview" alt="Vista previa" />
+                <span id="center-photo-name"></span>
+            </div>
+
+            <input id="center-photo" type="file" accept="image/*" style="display:none;" />
+        </div>
+
+            <button id="submit-center-btn" class="primary-btn">Guardar centro de ayuda</button>
+            <button id="cancel-center-btn" class="ghost-btn">Cancelar</button>
+            <p id="center-form-msg"></p>
         </div>
     </div>
 
@@ -513,8 +692,7 @@
             </div>
         </div>
 
-        <div class="external-section" id="ninez-section">
-            <h2 class="section-title">Ayuda para niños, niñas y adolescentes</h2>
+        <div class="external-section" id="ninos-section">            <h2 class="section-title">Ayuda para niños, niñas y adolescentes</h2>
             <p class="external-note">
                 Organizaciones e instituciones que pueden orientar o brindar apoyo relacionado con niños, niñas y adolescentes. Chequea sus sitios web o redes sociales para más información.
             </p>
@@ -555,6 +733,36 @@
                     <strong>Busca Nexosignal</strong>
                     <span>Búsqueda y reportes relacionados con niños, niñas y adolescentes.</span>
                 </a>
+            </div>
+        </div>
+
+        <div class="external-section" id="centros-section">
+            <h2 class="section-title">Centros de Ayuda</h2>
+
+            <p class="external-note">
+                Lugares donde las personas pueden conseguir ayuda, insumos, comida, agua, refugio, atención médica u otros recursos.
+            </p>
+
+            <button id="open-center-form-btn" class="help-report-btn">
+                + Reportar centro de ayuda
+            </button>
+
+            <div class="center-tabs">
+                <button class="center-tab active" data-category="todos">Todos</button>
+                <button class="center-tab" data-category="Centro de acopio">Centro de acopio</button>
+                <button class="center-tab" data-category="Agua potable">Agua potable</button>
+                <button class="center-tab" data-category="Comida / cocina">Comida / cocina</button>
+                <button class="center-tab" data-category="Hospital funcionando">Hospital funcionando</button>
+                <button class="center-tab" data-category="Refugio / albergue">Refugio / albergue</button>
+                <button class="center-tab" data-category="Gasolina">Gasolina</button>
+                <button class="center-tab" data-category="Farmacia abierta">Farmacia abierta</button>
+                <button class="center-tab" data-category="Punto de carga">Punto de carga</button>
+                <button class="center-tab" data-category="Internet / señal">Internet / señal</button>
+                <button class="center-tab" data-category="Otro recurso">Otro recurso</button>
+            </div>
+
+            <div class="centers-grid" id="centers-list">
+                <p class="external-note">Todavía no hay centros de ayuda reportados.</p>
             </div>
         </div>
 
@@ -612,13 +820,111 @@
         document.getElementById('open-form-btn').addEventListener('click', () => {
             document.getElementById('report-form').style.display = 'block'
         })
+        // Help center form
+        document.getElementById('open-center-form-btn').addEventListener('click', () => {
+            document.getElementById('center-form-modal').style.display = 'block'
+        })
+        document.getElementById('close-center-form-btn').addEventListener('click', () => {
+            document.getElementById('center-form-modal').style.display = 'none'
+        })
+        document.getElementById('cancel-center-btn').addEventListener('click', () => {
+            document.getElementById('center-form-modal').style.display = 'none'
+        })
         document.getElementById('close-form-btn').addEventListener('click', () => {
             document.getElementById('report-form').style.display = 'none'
         })
+        document.getElementById('submit-center-btn').addEventListener('click', async () => {
+            const name = document.getElementById('center-name').value.trim()
+            const category = document.getElementById('center-category').value.trim()
+            const location = document.getElementById('center-location').value.trim()
+            const details = document.getElementById('center-details').value.trim()
+            const hours = document.getElementById('center-hours').value.trim()
+            const contact = document.getElementById('center-contact').value.trim()
+            const msg = document.getElementById('center-form-msg')
+
+            if (!name || !category || !location) {
+                msg.textContent = 'Nombre, tipo de ayuda y dirección son obligatorios.'
+                return
+            }
+            let photo_url = null
+            const centerPhotoFile = document.getElementById('center-photo').files[0]
+
+            if (centerPhotoFile) {
+                const path = 'centers/' + crypto.randomUUID() + '-' + centerPhotoFile.name
+                const { error: upErr } = await supabase.storage.from('photos').upload(path, centerPhotoFile)
+
+                if (upErr) {
+                    msg.textContent = 'Error subiendo foto: ' + upErr.message
+                    return
+                }
+
+                photo_url = supabase.storage.from('photos').getPublicUrl(path).data.publicUrl
+            }
+            const { error } = await supabase.from('help_centers').insert({
+                name,
+                category,
+                location,
+                details,
+                hours,
+                contact,
+                photo_url
+            })
+            if (error) {
+                msg.textContent = 'Error: ' + error.message
+                return
+            }
+
+            msg.textContent = '✓ Centro de ayuda guardado.'
+
+            document.getElementById('center-name').value = ''
+            document.getElementById('center-category').value = ''
+            document.getElementById('center-location').value = ''
+            document.getElementById('center-details').value = ''
+            document.getElementById('center-hours').value = ''
+            document.getElementById('center-contact').value = ''
+            document.getElementById('center-photo').value = ''
+
+            document.getElementById('center-form-modal').style.display = 'none'
+            fetchCenters()
+        })
+
 
         const dropzone = document.getElementById('dropzone')
         const photoInput = document.getElementById('photo')
         dropzone.addEventListener('click', () => photoInput.click())
+        const centerDropzone = document.getElementById('center-dropzone')
+        const centerPhotoInput = document.getElementById('center-photo')
+
+        centerDropzone.addEventListener('click', () => centerPhotoInput.click())
+        centerDropzone.addEventListener('dragover', (e) => {
+            e.preventDefault()
+            centerDropzone.classList.add('drag')
+        })
+        centerDropzone.addEventListener('dragleave', () => {
+            centerDropzone.classList.remove('drag')
+        })
+        centerDropzone.addEventListener('drop', (e) => {
+            e.preventDefault()
+            centerDropzone.classList.remove('drag')
+
+            if (e.dataTransfer.files.length) {
+                centerPhotoInput.files = e.dataTransfer.files
+                centerPhotoInput.dispatchEvent(new Event('change'))
+            }
+        })
+        centerPhotoInput.addEventListener('change', (e) => {
+            const f = e.target.files[0]
+            const preview = document.getElementById('center-photo-preview')
+
+            document.getElementById('center-photo-name').textContent = f ? f.name : ''
+
+            if (f) {
+                preview.src = URL.createObjectURL(f)
+                preview.style.display = 'block'
+            } else {
+                preview.style.display = 'none'
+            }
+        })
         dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('drag') })
         dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag'))
         dropzone.addEventListener('drop', (e) => {
@@ -635,7 +941,6 @@
             if (f) { preview.src = URL.createObjectURL(f); preview.style.display = 'block' }
             else { preview.style.display = 'none' }
         })
-
         document.getElementById('submit-btn').addEventListener('click', async () => {
             const name = document.getElementById('name').value.trim()
             const cedula = document.getElementById('cedula').value.trim()
@@ -681,6 +986,55 @@
         //List 
         let allReports = []
         let changedByMap = {}
+        let allCenters = []
+        let currentCenterCategory = 'todos'
+
+        async function fetchCenters() {
+            const { data, error } = await supabase
+                .from('help_centers')
+                .select('*')
+                .order('created_at', { ascending: false })
+
+            if (error) {
+                console.log('Error loading help centers:', error.message)
+                return
+            }
+
+            allCenters = data || []
+            renderCenters()
+        }
+        function renderCenters() {
+            const list = document.getElementById('centers-list')
+            if (!list) return
+
+            const filtered = currentCenterCategory === 'todos'
+                ? allCenters
+                : allCenters.filter(c => c.category === currentCenterCategory)
+
+            if (!filtered.length) {
+                list.innerHTML = '<p class="external-note">Todavía no hay centros de ayuda en esta categoría.</p>'
+                return
+            }
+
+            list.innerHTML = ''
+
+            for (const center of filtered) {
+                const card = document.createElement('div')
+                card.className = 'external-card'
+
+                card.innerHTML = `
+                    ${center.photo_url ? `<img class="center-photo" src="${center.photo_url}" alt="">` : ''}
+                    <strong>${escapeHtml(center.name)}</strong>
+                    <span><b>${escapeHtml(center.category)}</b></span>
+                    <span>📍 ${escapeHtml(center.location)}</span>
+                    ${center.details ? `<span>📝 ${escapeHtml(center.details)}</span>` : ''}
+                    ${center.hours ? `<span>🕒 ${escapeHtml(center.hours)}</span>` : ''}
+                    ${center.contact ? `<span>📞 ${escapeHtml(center.contact)}</span>` : ''}
+                `
+
+                list.appendChild(card)
+            }
+        }
 
         async function fetchAndRender() {
             const { data: reports } = await supabase.from('reports').select('*').order('created_at', { ascending: false })
@@ -852,7 +1206,16 @@
         }
 
         document.getElementById('search').addEventListener('input', render)
+        document.querySelectorAll('.center-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.center-tab').forEach(t => t.classList.remove('active'))
 
+                tab.classList.add('active')
+                currentCenterCategory = tab.dataset.category
+
+                renderCenters()
+            })
+        })
         // Mark found 
         let currentFoundId = null
         function openFoundModal(id) {
@@ -888,6 +1251,7 @@
 
         /* Load on start */
         fetchAndRender()
+        fetchCenters()
     </script>
 </body>
 </html>

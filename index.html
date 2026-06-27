@@ -56,6 +56,34 @@
         .site-header h1{font-size:3.2rem;margin:0 0 12px;letter-spacing:-.02em;color:#fff;line-height:1.05}
         .site-header .tagline{color:var(--on-dark-muted);font-size:1.22rem;margin:0 0 26px;max-width:600px;line-height:1.6}
 
+        .quick-nav{
+            position:sticky;
+            top:0;
+            z-index:40;
+            display:flex;
+            justify-content:center;
+            flex-wrap:wrap;
+            gap:8px;
+            padding:10px 14px;
+            background:#13284a;
+            border-bottom:1px solid rgba(255,255,255,.12);
+        }
+        .quick-nav a{
+            background:transparent;
+            color:var(--on-dark);
+            border:1px solid rgba(255,255,255,.35);
+            padding:7px 11px;
+            border-radius:999px;
+            font-size:.82rem;
+            font-weight:800;
+            text-decoration:none;
+            white-space:nowrap;
+        }
+        .quick-nav a:hover{
+            border-color:var(--ven-yellow);
+            color:var(--ven-yellow);
+        }
+
         #open-form-btn{
             background:var(--ven-yellow);color:var(--ink);border:none;
             padding:14px 22px;border-radius:10px;font-size:1rem;font-weight:700;
@@ -332,6 +360,12 @@
 </head>
 <body>
     <div class="flag-stripe"></div>
+    <nav class="quick-nav">
+        <a href="#buscando-section">Buscando</a>
+        <a href="#encontrados-section">Encontrados</a>
+        <a href="#plataformas-section">Plataformas de ayuda</a>
+        <a href="#telefonos-section">Teléfonos de emergencia</a>
+    </nav>
 
     <!-- Report modal -->
     <div id="report-form">
@@ -438,7 +472,7 @@
     <section id="list-view">    
         <input id="search" type="text" placeholder="Buscar por nombre o cédula..." />
 
-        <h2 class="section-title">Buscando</h2>
+        <h2 class="section-title" id="buscando-section">Buscando</h2>
         <div class="two-col">
             <div>
                 <h3 class="sub-title">Niños, Niñas y Adolescentes</h3>
@@ -450,7 +484,7 @@
             </div>
         </div>
 
-        <h2 class="section-title">Encontrados</h2>
+        <h2 class="section-title" id="encontrados-section">Encontrados</h2>
         <div class="two-col">
             <div>
                 <h3 class="sub-title">Niños, Niñas y Adolescentes</h3>
@@ -462,8 +496,8 @@
             </div>
         </div>
 
-        <div class="external-section">
-            <h2 class="section-title">Otras plataformas de ayuda</h2>
+        <div class="external-section" id="plataformas-section"></div>
+        <h2 class="section-title">Otras plataformas de ayuda</h2>
             <p class="external-note">
                 Para mas información, también puedes revisar estas plataformas externas.
             </p>
@@ -487,8 +521,7 @@
         </div>
 
         <div class="help-section">
-            <h2 class="section-title">Teléfonos de emergencia · Caracas</h2>
-
+            <h2 class="section-title" id="telefonos-section">Teléfonos de emergencia · Caracas</h2>
             <h4 class="phone-h">Emergencias</h4>
             <div class="emergency-row">
                 <a class="ephone" href="tel:171"><span class="ecompany">CANTV</span><span class="enum">171</span></a>
